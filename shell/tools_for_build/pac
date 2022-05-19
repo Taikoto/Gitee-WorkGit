@@ -1,0 +1,48 @@
+#!/bin/bash
+
+SRC_DIR=$(cd `dirname $0` ; pwd)
+
+#BOARD=$(cat Boardinfo.ini)
+#TARGET_PRODUCT=${BOARD%-*}
+#TARGET_BUILD_VARIANT=${BOARD#*-}
+
+
+PROJECT_NAME="E02_6771_9_1_ENTIRETY_1920_720"
+
+#BuildLogFile=build_ecarxICp1_64.log
+
+#OUT_TARGET_NAME=$(sed -n 1p $BuildLogFile)
+#echo $OUT_TARGET_NAME
+#PROJECT_NAME=`echo $OUT_TARGET_NAME | awk -F " " '{print $6}'`
+#echo $PROJECT_NAME
+
+dateFolder=$(date +%Y%m%d%H%M)
+TargetFolder=$SRC_DIR/release/${PROJECT_NAME}_${dateFolder}
+ScatterFile="imglist.txt"
+OutFolder=$SRC_DIR/out/target/product/ecarxICp1_64
+dos2unix ${SRC_DIR}/$ScatterFile
+
+
+function imgout()
+{
+    echo " "
+    echo "Copy building result."
+    echo "Start!"
+
+    mkdir -p $TargetFolder
+    echo $TargetFolder
+
+    scatter=${SRC_DIR}/$ScatterFile
+
+    cp -rf ${scatter} ${TargetFolder}
+
+    cat ${scatter} | while  read line
+    do 
+        filename=${line}
+        if [ "$filename" != "NONE"  ]; then
+            echo ${filename}
+            cp -rf ${OutFolder}/${filename} ${TargetFolder}
+        fi  
+    done
+}
+imgout;
